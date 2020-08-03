@@ -5,9 +5,9 @@ import { NgModule } from '@angular/core';
 import { ChatComponent } from './components/chat/chat.component';
 
 const ROUTES: Routes = [
-    { path: '', redirectTo:'chat'},
+    { path: '', redirectTo:'chat',pathMatch:'full'},
     { path: 'chat', component: ChatComponent },
-    { path: '**', redirectTo:'chat' },
+    { path: '**', redirectTo:'chat',pathMatch:'full' },
 
     //{ path: 'path/:routeParam', component: MyComponent },
     //{ path: 'staticPath', component: ... },
@@ -17,7 +17,7 @@ const ROUTES: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(ROUTES)],
+    imports: [RouterModule.forRoot(ROUTES)],
     exports: [RouterModule]
 })
 export class AppRoutingModule {}
