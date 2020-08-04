@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import { JsonPipe } from '@angular/common';
 import { Mensaje } from 'src/app/models/mensaje';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
@@ -10,6 +10,10 @@ import { Mensaje } from 'src/app/models/mensaje';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
+
+  usuario1='';
+  usuario2='';
+  
   escribiendo=''
 
   ingresoUsuario=false;
@@ -30,7 +34,7 @@ export class ChatComponent implements OnInit {
       console.log('Conectados: ' + this.client.connected + ' : ' + frame);
 
       this.client.subscribe(`/chat/mensaje/${this.mensaje.username1}${this.mensaje.username2}`, e => {
-        console.log(e.body);
+        
         let nuevoMensaje: Mensaje = JSON.parse(e.body);
         this.mensajes.push(nuevoMensaje);
         setTimeout(()=>{
@@ -38,14 +42,12 @@ export class ChatComponent implements OnInit {
         },10)
       })
 
-
       this.client.subscribe('/chat/historial', e => {
 
-        console.log(e.body);
+        
         
         this.mensajes=JSON.parse(e.body) as Mensaje[];
         this.scrollear=document.getElementById('message');
-        console.log(this.scrollear.scrollHeight);
         setTimeout(()=>{
           this.scrollear.scrollTop=this.scrollear.scrollHeight;
         },10)
@@ -53,7 +55,7 @@ export class ChatComponent implements OnInit {
 
       })
       this.client.subscribe(`/chat/escribiendo/${this.mensaje.username2}${this.mensaje.username1}`,e=>{
-        console.log(e.body);
+        
         this.escribiendo=e.body as string;
         setTimeout(() => {
           
@@ -73,13 +75,15 @@ export class ChatComponent implements OnInit {
 
     }
     this.client.onDisconnect = (frame) => {
+      
       console.log('Desconectados: ' + !this.client.connected + ' : ' + frame);
     }
 
 
   }
   conectar() {
-
+this.mensaje.username1=this.usuario1.toLowerCase();
+this.mensaje.username2=this.usuario2.toLowerCase();
     this.client.activate();
     
   }
@@ -102,7 +106,11 @@ export class ChatComponent implements OnInit {
     })
     this.mensaje.texto='';
   }
-  ingreso(){
+  ingreso(form:NgForm){
+    if(form.invalid || form.controls.usuario1.value.toLowerCase() == form.controls.usuario2.value.toLowerCase()){
+      form.control.markAllAsTouched();
+      return;
+    }
     this.ingresoUsuario=true;
     this.conectar();
   }

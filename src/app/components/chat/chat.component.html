@@ -1,23 +1,26 @@
-<div class="container mt-3" *ngIf="!ingresoUsuario">
-    <form>
-        <div class="form-group col-md-6">
-            <label>Ingrese Usuario</label>
-            <input type="text" class="form-control" [(ngModel)]="mensaje.username1" name="usuario" required>
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+<div class="container mt-3 text-center  " *ngIf="!ingresoUsuario" style="max-width: 500px;">
+    <form #form="ngForm" (submit)="ingreso(form)">
+        <div class="form-group col">
+            <label>Ingrese su nombre</label>
+            <input type="text" class="form-control" [(ngModel)]="usuario1" name="usuario1" required #user1="ngModel">
+            <small *ngIf="user1.invalid && user1.touched" id="emailHelp" class="form-text text-danger">Nombre Requerido</small>
         </div>
-        <div class="form-group col-md-6">
-            <label>Ingrese Usuario2</label>
-            <input type="text" class="form-control" [(ngModel)]="mensaje.username2" name="usuario2" required>
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        <div class="form-group col">
+            <label>Ingrese nombre de contacto</label>
+            <input type="text" class="form-control" [(ngModel)]="usuario2" name="usuario2" required #user2="ngModel">
+            <small *ngIf="user2.invalid && user2.touched" id="emailHelp" class="form-text text-danger">Contacto Requerido</small>
+            <button type="submit"  class="btn btn-primary mt-2">Iniciar Chat</button>
+            <small *ngIf="usuario1.toLowerCase() == usuario2.toLowerCase() && form.submitted && user1.touched" id="emailHelp" class="form-text text-danger">Usuarios no pueden ser iguales</small>
         </div>
-        <button type="button" (click)="ingreso()" class="btn btn-primary">Submit</button>
+        
     </form>
 
 </div>
 
-<div class="card text-center overflow-auto m-auto" *ngIf="ingresoUsuario" style="min-width:300px;max-width: 800px;">
-    <div class="card-header">
+<div class="card text-center overflow-auto m-auto" *ngIf="ingresoUsuario" style="min-width:300px;max-width: 500px;">
+    <div class="card-header text-left" >
         {{mensaje.username2}} {{escribiendo}}
+        <button class="btn btn-danger float-right" (click)="desconectar()">Desconectar</button>
     </div>
     <div class="card-body" style="overflow-y:auto; height: 400px" id="message">
 
@@ -29,9 +32,9 @@
             [ngClass]="[mensajeServer.username1==mensaje.username1?'text-right':'text-left']">
             <span class="badge" 
                 [ngClass]="[mensajeServer.username1==mensaje.username1?'badge-success':'badge-warning ']" value="usuario1">
-                {{mensaje.username1}}
+                {{mensajeServer.username1==mensaje.username1?mensaje.username1:mensaje.username2}}
             </span>
-            <p>{{mensajeServer.texto}}</p>
+            <p >{{mensajeServer.texto}}</p>
         </div>
 
 
@@ -39,8 +42,9 @@
 
     </div>
     <div class="card-footer text-muted">
+        <form>
         <input type="text" [(ngModel)]="mensaje.texto" name="texto" (keyup)="estaEscribiendo()">
         <button class="btn btn-primary mx-3" (click)="enviarMensaje()">Enviar Mensaje</button>
-        <button class="btn btn-danger" (click)="desconectar()">Desconectar</button>
+        </form>
     </div>
 </div>
