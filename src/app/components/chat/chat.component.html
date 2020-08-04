@@ -1,1 +1,46 @@
-<p>chat works!</p>
+<div class="container mt-3" *ngIf="!ingresoUsuario">
+    <form>
+        <div class="form-group col-md-6">
+            <label>Ingrese Usuario</label>
+            <input type="text" class="form-control" [(ngModel)]="mensaje.username1" name="usuario" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Ingrese Usuario2</label>
+            <input type="text" class="form-control" [(ngModel)]="mensaje.username2" name="usuario2" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <button type="button" (click)="ingreso()" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>
+
+<div class="card text-center overflow-auto m-auto" *ngIf="ingresoUsuario" style="min-width:300px;max-width: 800px;">
+    <div class="card-header">
+        {{mensaje.username2}} {{escribiendo}}
+    </div>
+    <div class="card-body" style="overflow-y:auto; height: 400px" id="message">
+
+        <!-- <span class="d-block px-2 my-4" style="font-size: 20px;max-width: 300px;border-radius: 10px;"
+            [ngClass]="[mensajeServer.username1==mensaje.username1?'badge-success float-right':'badge-warning float-left']">
+            {{mensajeServer.texto}}
+        </span> -->
+        <div *ngFor="let mensajeServer of mensajes"
+            [ngClass]="[mensajeServer.username1==mensaje.username1?'text-right':'text-left']">
+            <span class="badge" 
+                [ngClass]="[mensajeServer.username1==mensaje.username1?'badge-success':'badge-warning ']" value="usuario1">
+                {{mensaje.username1}}
+            </span>
+            <p>{{mensajeServer.texto}}</p>
+        </div>
+
+
+
+
+    </div>
+    <div class="card-footer text-muted">
+        <input type="text" [(ngModel)]="mensaje.texto" name="texto" (keyup)="estaEscribiendo()">
+        <button class="btn btn-primary mx-3" (click)="enviarMensaje()">Enviar Mensaje</button>
+        <button class="btn btn-danger" (click)="desconectar()">Desconectar</button>
+    </div>
+</div>
